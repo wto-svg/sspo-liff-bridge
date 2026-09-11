@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>SSPO Heart Credit</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  html, body{ margin:0; height:100%; }
+  body{
+    font-family: -apple-system, 'Segoe UI', Roboto, 'Sarabun', sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:#FBF7F1; color:#262A3B;
+  }
+  .spinner{
+    width:34px; height:34px;
+    border:3px solid #E9E2D6; border-top-color:#D6455A;
+    border-radius:50%; animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  p{ margin-top:14px; font-size:14px; color:#6B7080; text-align:center; padding:0 24px; }
+</style>
+</head>
+<body>
+  <div class="spinner"></div>
+  <p id="msg">กำลังเชื่อมต่อ LINE...</p>
+
+<script>
+  // ===== ตั้งค่า 2 ค่านี้ก่อนใช้งาน =====
+  const LIFF_ID = '2011556374-g5iZrRgn';
+  // วาง URL /exec ล่าสุดของ Apps Script Web App ตรงนี้ (จาก Deploy > Manage deployments)
+  const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec';
+
+  liff.init({ liffId: LIFF_ID })
+    .then(() => {
+      if (!liff.isLoggedIn()) {
+        liff.login(); // หน้านี้ไม่ได้อยู่ใน iframe ของ GAS จึง redirect ได้ตามปกติ
+        return null;
+      }
+      return liff.getProfile();
+    })
+    .then((profile) => {
+      if (!profile) return; // กำลัง redirect ไป login
+      const target = GAS_WEBAPP_URL + '?uid=' + encodeURIComponent(profile.userId);
+      window.location.href = target;
+    })
+    .catch((err) => {
+      document.getElementById('msg').textContent = 'เชื่อมต่อ LINE ไม่สำเร็จ: ' + err.message;
+    });
+</script>
+</body>
+</html>
