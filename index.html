@@ -41,7 +41,10 @@
     })
     .then((profile) => {
       if (!profile) return; // กำลัง redirect ไป login
-      const target = GAS_WEBAPP_URL + '?uid=' + encodeURIComponent(profile.userId);
+      let target = GAS_WEBAPP_URL + '?uid=' + encodeURIComponent(profile.userId);
+      if (profile.pictureUrl) {
+        target += '&pic=' + encodeURIComponent(profile.pictureUrl);
+      }
       window.location.href = target;
     })
     .catch((err) => {
